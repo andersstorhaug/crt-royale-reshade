@@ -40,10 +40,9 @@
 	#define CONTENT_HEIGHT BUFFER_HEIGHT
 #endif
 
-// Wrap the content size in parenthesis for internal use, so the
-// user doesn't have to
-#define CONTENT_WIDTH_INTERNAL int(CONTENT_WIDTH)
-#define CONTENT_HEIGHT_INTERNAL int(CONTENT_HEIGHT)
+#ifndef VERTICAL_SCANLINES
+	#define VERTICAL_SCANLINES 0
+#endif
 
 // Offset the center of the game's content (horizontal)
 #ifndef CONTENT_CENTER_X
@@ -52,6 +51,21 @@
 // Offset the center of the game's content (vertical)
 #ifndef CONTENT_CENTER_Y
 	#define CONTENT_CENTER_Y 0
+#endif
+
+// Wrap the content size in parenthesis for internal use, so the
+// user doesn't have to
+
+#if !VERTICAL_SCANLINES || CONTENT_BOX_VISIBLE
+	#define CONTENT_WIDTH_INTERNAL int(CONTENT_WIDTH)
+	#define CONTENT_HEIGHT_INTERNAL int(CONTENT_HEIGHT)
+	#define CONTENT_CENTER_X_INTERNAL CONTENT_CENTER_X
+	#define CONTENT_CENTER_Y_INTERNAL CONTENT_CENTER_Y
+#else
+	#define CONTENT_WIDTH_INTERNAL int(CONTENT_HEIGHT)
+	#define CONTENT_HEIGHT_INTERNAL int(CONTENT_WIDTH)
+	#define CONTENT_CENTER_X_INTERNAL CONTENT_CENTER_Y
+	#define CONTENT_CENTER_Y_INTERNAL CONTENT_CENTER_X
 #endif
 
 static const float2 buffer_size = float2(BUFFER_WIDTH, BUFFER_HEIGHT);

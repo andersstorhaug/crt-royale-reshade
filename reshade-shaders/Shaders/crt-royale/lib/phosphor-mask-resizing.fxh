@@ -139,7 +139,7 @@ float2 get_resized_mask_tile_size(const float2 estimated_viewport_size,
 float3 get_downsizing_factor_and_true_tile_size() {
     const float triad_size = mask_specify_num_triads == 0 ?
         mask_triad_size_desired :
-        float(CONTENT_WIDTH) / mask_num_triads_desired;
+        float(CONTENT_WIDTH_INTERNAL) / mask_num_triads_desired;
 
     const float2 true_tile_size_float = mask_sample_mode_desired < 1.5 ?
         triad_size * mask_triads_per_tile * float2(1, tile_aspect_inv) :

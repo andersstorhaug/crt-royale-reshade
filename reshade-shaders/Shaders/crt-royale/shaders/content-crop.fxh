@@ -24,7 +24,7 @@
 
 
 // The normalized center is 0.5 plus the normalized offset
-static const float2 content_center = (TEXCOORD_OFFSET + float2(CONTENT_CENTER_X, CONTENT_CENTER_Y)) / buffer_size + 0.5;
+static const float2 content_center = (TEXCOORD_OFFSET + float2(CONTENT_CENTER_X_INTERNAL, CONTENT_CENTER_Y_INTERNAL)) / buffer_size + 0.5;
 // The content's normalized diameter d is its size divided by the buffer's size. The radius is d/2.
 static const float2 content_radius = content_size / (2.0 * buffer_size);
 
@@ -39,11 +39,16 @@ static const float2 content_offset = float2(content_left, content_upper);
 
 void cropContentPixelShader(
     in const float4 pos : SV_Position,
-    in const float2 texcoord : TEXCOORD0,
+    in float2 texcoord : TEXCOORD0,
 
     out float4 color : SV_Target
 ) {
-    const float2 texcoord_cropped = texcoord * content_size / buffer_size + content_offset;
+    float2 texcoord_cropped = texcoord * content_size / buffer_size + content_offset;
+
+#if VERTICAL_SCANLINES
+    texcoord_cropped = ((texcoord_cropped - 0.5) * buffer_size).yx * (1.0 / buffer_size) + 0.5;
+#endif
+
     color = tex2D(ReShade::BackBuffer, texcoord_cropped);
 }
 
@@ -53,11 +58,13 @@ void uncropContentPixelShader(
 
     out float4 color : SV_Target
 ) {
-    const bool is_in_boundary = float(
-        texcoord.x >= content_left && texcoord.x <= content_right &&
-        texcoord.y >= content_upper && texcoord.y <= content_lower
-    );
-    const float2 texcoord_uncropped = (texcoord - content_offset) * buffer_size / content_size;
+    float2 texcoord_uncropped = (texcoord - content_offset) * buffer_size / content_size;
+
+#if VERTICAL_SCANLINES
+    texcoord_uncropped = ((texcoord_uncropped - 0.5) * content_size).yx * (1.0 / content_size) + 0.5;
+#endif
+
+    const bool is_in_boundary = all(step(texcoord_uncropped, 0) - step(texcoord_uncropped, 1));
 
     const float3 raw_color = tex2D(samplerGeometry, texcoord_uncropped).rgb;
     color = float4(is_in_boundary * raw_color, 1);
