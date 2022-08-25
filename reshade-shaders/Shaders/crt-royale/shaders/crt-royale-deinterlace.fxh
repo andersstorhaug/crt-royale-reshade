@@ -30,7 +30,7 @@ void deinterlacePS(
     // If we're in the correct field, use the current sample
     // If we're in the wrong field, average the current and prev samples
     //   In this case, we're probably averaging a color with 0 and producing a brightness of 0.5.
-    if (enable_interlacing && scanline_deinterlacing_mode == 1) {
+    if (_ENABLE_INTERLACING && scanline_deinterlacing_mode == 1) {
         const float cur_scanline_idx = get_curr_scanline_idx(texcoord, texcoord.y, CONTENT_HEIGHT_INTERNAL);
         const float wrong_field = curr_line_is_wrong_field(cur_scanline_idx);
         
@@ -50,7 +50,7 @@ void deinterlacePS(
     // If we're in the correct field, use the current sample
     // If we're in the wrong field, average the current and prev samples
     //   In this case, we're averaging two fully illuminated colors
-    else if (enable_interlacing && scanline_deinterlacing_mode == 2) {
+    else if (_ENABLE_INTERLACING && scanline_deinterlacing_mode == 2) {
         const float cur_scanline_idx = get_curr_scanline_idx(texcoord, texcoord.y, CONTENT_HEIGHT_INTERNAL);
         const float2 frame_and_line_field_idx = get_frame_and_line_field_idx(cur_scanline_idx);
         const float wrong_field = curr_line_is_wrong_field(frame_and_line_field_idx);

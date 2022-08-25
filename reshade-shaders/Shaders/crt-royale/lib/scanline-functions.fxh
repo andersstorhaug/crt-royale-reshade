@@ -430,7 +430,7 @@ float2 get_frame_and_line_field_idx(const float curr_scanline_idx)
 
     // When interlacing is disabled, every scanline is in-field b/c
     // the modulus is 1
-    const float modulus = enable_interlacing + 1.0;
+    const float modulus = _ENABLE_INTERLACING + 1.0;
 
     // We implement the Static deinterlacing algorithm by lerp'ing
     // between two candidate frame parities. The static algorithm

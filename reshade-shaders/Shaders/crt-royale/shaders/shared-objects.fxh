@@ -389,7 +389,11 @@ sampler2D samplerBloomHorizontal { Texture = texBloomHorizontal; };
 #endif
 
 #ifndef _SCANLINE_NUM_PIXELS
-# define _SCANLINE_NUM_PIXELS scanline_num_pixels
+	#define _SCANLINE_NUM_PIXELS scanline_num_pixels
+#endif
+
+#ifndef _ENABLE_INTERLACING
+	#define _ENABLE_INTERLACING enable_interlacing
 #endif
 
 #endif  // _SHARED_OBJECTS_H
