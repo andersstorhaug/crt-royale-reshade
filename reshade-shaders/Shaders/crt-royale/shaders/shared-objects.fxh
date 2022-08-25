@@ -388,4 +388,8 @@ sampler2D samplerBloomHorizontal { Texture = texBloomHorizontal; };
 	#define samplerGeometry samplerCrop
 #endif
 
+#ifndef _SCANLINE_NUM_PIXELS
+# define _SCANLINE_NUM_PIXELS scanline_num_pixels
+#endif
+
 #endif  // _SHARED_OBJECTS_H

@@ -380,13 +380,13 @@ float3 get_averaged_scanline_sample(
     const float scanline_start_y, const float v_step_y,
     const float input_gamma
 ) {
-    // Sample `scanline_num_pixels` vertically-contiguous pixels and average them.
+    // Sample `_SCANLINE_NUM_PIXELS` vertically-contiguous pixels and average them.
     float3 interpolated_line = 0.0;
-    for (int i = 0; i < scanline_num_pixels; i++) {
+    for (int i = 0; i < _SCANLINE_NUM_PIXELS; i++) {
         float4 coord = float4(texcoord.x, scanline_start_y + i * v_step_y, 0, 0);
         interpolated_line += tex2Dlod_linearize(tex, coord, input_gamma).rgb;
     }
-    interpolated_line /= float(scanline_num_pixels);
+    interpolated_line /= float(_SCANLINE_NUM_PIXELS);
 
     return interpolated_line;
 }
@@ -399,10 +399,10 @@ float get_curr_scanline_idx(
 ) {
     // Given a y-coordinate in [0, 1] and a texture size,
     // return the scanline index. Note that a scanline is a single band of
-    // thickness `scanline_num_pixels` belonging to a single field.
+    // thickness `_SCANLINE_NUM_PIXELS` belonging to a single field.
 
     const float curr_line_texel_y = floor(texcoord_y * tex_size_y + under_half);
-    return floor(curr_line_texel_y / scanline_num_pixels + FIX_ZERO(0.0));
+    return floor(curr_line_texel_y / _SCANLINE_NUM_PIXELS + FIX_ZERO(0.0));
 }
 
 float get_scanline_center(
@@ -410,9 +410,9 @@ float get_scanline_center(
     const float line_texel_y,
     const float scanline_idx
 ) {
-    const float scanline_start_y = scanline_idx * scanline_num_pixels;
+    const float scanline_start_y = scanline_idx * _SCANLINE_NUM_PIXELS;
 
-    const float half_num_pixels = scanline_num_pixels / 2;
+    const float half_num_pixels = _SCANLINE_NUM_PIXELS / 2;
     const float half_size = floor(half_num_pixels + under_half);
     const float num_pixels_is_even = float(half_size >= half_num_pixels);
     // const float num_pixels_is_even = float(half_size < half_num_pixels);

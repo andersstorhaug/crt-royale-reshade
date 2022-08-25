@@ -14,7 +14,7 @@ void deinterlaceVS(
 ) {
     PostProcessVS(id, position, texcoord);
 
-    v_step = float2(0.0, scanline_num_pixels / TEX_FREEZEFRAME_HEIGHT);
+    v_step = float2(0.0, _SCANLINE_NUM_PIXELS / TEX_FREEZEFRAME_HEIGHT);
 }
 
 

@@ -52,7 +52,7 @@ void simulateInterlacingPS(
     //  tex2D_linearize will decode CRT gamma.  Don't bother branching:
     float curr_scanline_idx = get_curr_scanline_idx(texcoord, texcoord.y, content_size.y);
     float curr_scanline_start_y = (
-        curr_scanline_idx * scanline_num_pixels + TEXCOORD_OFFSET
+        curr_scanline_idx * _SCANLINE_NUM_PIXELS + TEXCOORD_OFFSET
     ) / content_size.y;
     float3 in_field_interpolated_line = get_averaged_scanline_sample(
         samplerCrop, texcoord,
@@ -119,11 +119,11 @@ void simulateEletronBeamsPS(
         // Find the texel position of the current scanline
         const float curr_line_texel_v = floor(texcoord.y * orig_linearized_size.y + under_half);
         const float curr_scanline_idx = get_curr_scanline_idx(texcoord, texcoord.y, orig_linearized_size.y);
-        const float curr_scanline_start_v = curr_scanline_idx * scanline_num_pixels;
+        const float curr_scanline_start_v = curr_scanline_idx * _SCANLINE_NUM_PIXELS;
 
         // Find the center of the current scanline
         //   For odd sizes, this is a texel. For even, this is between two texels
-        const float half_num_pixels = scanline_num_pixels / 2;
+        const float half_num_pixels = _SCANLINE_NUM_PIXELS / 2;
         const float half_size = floor(half_num_pixels + under_half);
         const float num_pixels_is_even = float(half_size >= half_num_pixels);
         const float curr_scanline_center_v = curr_scanline_start_v + half_num_pixels - 0.5;
@@ -131,7 +131,7 @@ void simulateEletronBeamsPS(
         // Find the center of the nearest in-field scanline
         const float curr_line_is_below_center = float(curr_line_texel_v > curr_scanline_center_v);
         const float source_offset_direction = lerp(-1, 1, curr_line_is_below_center);
-        const float source_offset = source_offset_direction * wrong_field * scanline_num_pixels;
+        const float source_offset = source_offset_direction * wrong_field * _SCANLINE_NUM_PIXELS;
 
         const float source_scanline_center_v = curr_scanline_center_v + source_offset;
         const float source_scanline_start_v = curr_scanline_start_v + source_offset;
@@ -148,7 +148,7 @@ void simulateEletronBeamsPS(
         // Calculate the beam strength based upon distance from the scanline
         //   and intensity of the sampled color
         const float beam_dist_factor = 1 + float(enable_interlacing);
-        const float pixel_delta = 2 * scanline_max_embedding_dist / (beam_dist_factor * scanline_num_pixels);
+        const float pixel_delta = 2 * scanline_max_embedding_dist / (beam_dist_factor * _SCANLINE_NUM_PIXELS);
         const float max_beam_dist = scanline_max_embedding_dist - pixel_delta/2.0;
         const float beam_dist_denom = half_num_pixels / scanline_max_embedding_dist;
         
@@ -159,10 +159,10 @@ void simulateEletronBeamsPS(
             scanline_deinterlacing_mode != 1 &&
             scanline_deinterlacing_mode != 2
         );
-        const float interlacing_brightness_quotient = 1 + !enable_interlacing * float(scanline_num_pixels == 1);
+        const float interlacing_brightness_quotient = 1 + !enable_interlacing * float(_SCANLINE_NUM_PIXELS == 1);
         const float3 beam_strength = get_linear_beam_strength(
             beam_dist_y, scanline_color,
-            scanline_num_pixels,
+            _SCANLINE_NUM_PIXELS,
             enable_interlacing
         ) * interlacing_brightness_factor / interlacing_brightness_quotient;
 
@@ -181,11 +181,11 @@ void simulateEletronBeamsPS(
         // Find the texel position of the current scanline
         const float curr_line_texel_v = floor(texcoord.y * orig_linearized_size.y + under_half);
         const float curr_scanline_idx = get_curr_scanline_idx(texcoord, texcoord.y, orig_linearized_size.y);
-        const float curr_scanline_start_v = curr_scanline_idx * scanline_num_pixels;
+        const float curr_scanline_start_v = curr_scanline_idx * _SCANLINE_NUM_PIXELS;
 
         // Find the center of the current scanline
         //   For odd sizes, this is a texel. For even, this is between two texels
-        const float half_num_pixels = scanline_num_pixels / 2;
+        const float half_num_pixels = _SCANLINE_NUM_PIXELS / 2;
         const float half_size = floor(half_num_pixels + under_half);
         const float num_pixels_is_even = float(half_size >= half_num_pixels);
         const float curr_scanline_center_v = curr_scanline_start_v + half_num_pixels - 0.5;
@@ -193,7 +193,7 @@ void simulateEletronBeamsPS(
         // Find the center of the nearest in-field scanline
         const float curr_line_is_below_center = float(curr_line_texel_v > curr_scanline_center_v);
         const float source_offset_direction = lerp(-1, 1, curr_line_is_below_center);
-        const float source_offset = source_offset_direction * wrong_field * scanline_num_pixels;
+        const float source_offset = source_offset_direction * wrong_field * _SCANLINE_NUM_PIXELS;
 
         const float source_scanline_center_v = curr_scanline_center_v + source_offset;
         const float source_scanline_start_v = curr_scanline_start_v + source_offset;
@@ -210,7 +210,7 @@ void simulateEletronBeamsPS(
         // Calculate the beam strength based upon distance from the scanline
         //   and intensity of the sampled color
         const float beam_dist_factor = 1 + float(enable_interlacing);
-        const float pixel_delta = 2 * scanline_max_embedding_dist / (beam_dist_factor * scanline_num_pixels);
+        const float pixel_delta = 2 * scanline_max_embedding_dist / (beam_dist_factor * _SCANLINE_NUM_PIXELS);
         const float max_beam_dist = scanline_max_embedding_dist - pixel_delta/2.0;
         const float beam_dist_denom = beam_dist_factor * half_num_pixels / scanline_max_embedding_dist;
 
@@ -218,7 +218,7 @@ void simulateEletronBeamsPS(
         const float beam_dist_y = scanline_max_embedding_dist * beam_dist_v / beam_dist_denom;
 
         const float interlacing_brightness_factor = 2 - !enable_interlacing * float(
-            scanline_num_pixels == 1
+            _SCANLINE_NUM_PIXELS == 1
         );
         const float interlacing_brightness_quotient = 1 + enable_interlacing * float(
             scanline_deinterlacing_mode == 1 ||
@@ -245,11 +245,11 @@ void simulateEletronBeamsPS(
         // Find the texel position of the current scanline
         const float curr_line_texel_v = floor(texcoord.y * orig_linearized_size.y + under_half);
         const float curr_scanline_idx = get_curr_scanline_idx(texcoord, texcoord.y, orig_linearized_size.y);
-        const float curr_scanline_start_v = curr_scanline_idx * scanline_num_pixels;
+        const float curr_scanline_start_v = curr_scanline_idx * _SCANLINE_NUM_PIXELS;
 
         // Find the center of the current scanline
         //   For odd sizes, this is a texel. For even, this is between two texels
-        const float half_num_pixels = scanline_num_pixels / 2;
+        const float half_num_pixels = _SCANLINE_NUM_PIXELS / 2;
         const float half_size = floor(half_num_pixels + under_half);
         const float num_pixels_is_even = float(half_size >= half_num_pixels);
         const float curr_scanline_center_v = curr_scanline_start_v + half_num_pixels - 0.5;
@@ -257,9 +257,9 @@ void simulateEletronBeamsPS(
         // Find the center of the nearest in-field scanline
         const float curr_line_is_below_center = float(curr_line_texel_v > curr_scanline_center_v);
         const float source_offset_direction = lerp(-1, 1, curr_line_is_below_center);
-        const float source_offset = source_offset_direction * wrong_field * scanline_num_pixels;
+        const float source_offset = source_offset_direction * wrong_field * _SCANLINE_NUM_PIXELS;
 
-        const float bounding_scanline_offset_v = (2 - wrong_field) * scanline_num_pixels;
+        const float bounding_scanline_offset_v = (2 - wrong_field) * _SCANLINE_NUM_PIXELS;
 
         const float3 scanline_offsets_v = float3(
             -bounding_scanline_offset_v,
@@ -294,7 +294,7 @@ void simulateEletronBeamsPS(
         // Calculate the beam strength based upon distance from the scanline
         //   and intensity of the sampled color
         const float beam_dist_factor = 1 + float(enable_interlacing);
-        const float pixel_delta = 2 * scanline_max_embedding_dist / (beam_dist_factor * scanline_num_pixels);
+        const float pixel_delta = 2 * scanline_max_embedding_dist / (beam_dist_factor * _SCANLINE_NUM_PIXELS);
         const float max_beam_dist = scanline_max_embedding_dist - pixel_delta/2.0;
         const float beam_dist_denom = beam_dist_factor * half_num_pixels / scanline_max_embedding_dist;
 
@@ -302,7 +302,7 @@ void simulateEletronBeamsPS(
         const float3 beam_dists_y = scanline_max_embedding_dist * beam_dists_v / beam_dist_denom;
 
         const float interlacing_brightness_factor = 2 - !enable_interlacing * float(
-            scanline_num_pixels == 1
+            _SCANLINE_NUM_PIXELS == 1
         );
         const float interlacing_brightness_quotient = 1 + enable_interlacing * float(
             scanline_deinterlacing_mode == 1 ||
