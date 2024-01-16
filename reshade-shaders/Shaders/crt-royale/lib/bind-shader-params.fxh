@@ -145,11 +145,11 @@ static const float gba_gamma = 3.5; //  Irrelevant but necessary to define.
 
 // === HELP AND INFO ===
 
-uniform int APPEND_VERSION_SUFFIX(version) <
-	ui_text = "Version: " DOT_VERSION_STR;
-	ui_label = " ";
-	ui_type = "radio";
->;
+// uniform int APPEND_VERSION_SUFFIX(version) <
+// 	ui_text = "Version: " DOT_VERSION_STR;
+// 	ui_label = " ";
+// 	ui_type = "radio";
+// > = 0;
 
 uniform int basic_setup_help <
 	ui_text = "1. Configure the Content Box if your game has letter-boxing.\n"
@@ -164,7 +164,7 @@ uniform int basic_setup_help <
 	ui_label = " ";
 	ui_type = "radio";
     hidden = HIDE_HELP_SECTIONS;
->;
+> = 0;
 
 uniform int content_box_help <
 	ui_text = "1. Expand the Preprocessor Definitions section.\n"
@@ -191,7 +191,7 @@ uniform int content_box_help <
 	ui_label = " ";
 	ui_type = "radio";
     hidden = HIDE_HELP_SECTIONS;
->;
+> = 0;
 
 
 // ==== PHOSPHOR MASK ====

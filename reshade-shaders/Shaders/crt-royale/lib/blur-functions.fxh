@@ -1414,15 +1414,15 @@ float3 tex2Dblur12x12shared(const sampler2D tex,
     //  Fill each row of a matrix with an rgb sample and pre-multiply by the
     //  weights to obtain a weighted result:
     float3 sum = float3(0.0,0.0,0.0);
-    sum += mul(w0, float4x3(sample0curr, sample0adjx, sample0adjy, sample0diag));
-    sum += mul(w1, float4x3(sample1curr, sample1adjx, sample1adjy, sample1diag));
-    sum += mul(w2, float4x3(sample2curr, sample2adjx, sample2adjy, sample2diag));
-    sum += mul(w3, float4x3(sample3curr, sample3adjx, sample3adjy, sample3diag));
-    sum += mul(w4, float4x3(sample4curr, sample4adjx, sample4adjy, sample4diag));
-    sum += mul(w5, float4x3(sample5curr, sample5adjx, sample5adjy, sample5diag));
-    sum += mul(w6, float4x3(sample6curr, sample6adjx, sample6adjy, sample6diag));
-    sum += mul(w7, float4x3(sample7curr, sample7adjx, sample7adjy, sample7diag));
-    sum += mul(w8, float4x3(sample8curr, sample8adjx, sample8adjy, sample8diag));
+    sum += mul(w0, to_float4x4(sample0curr, sample0adjx, sample0adjy, sample0diag)).rgb;
+    sum += mul(w1, to_float4x4(sample1curr, sample1adjx, sample1adjy, sample1diag)).rgb;
+    sum += mul(w2, to_float4x4(sample2curr, sample2adjx, sample2adjy, sample2diag)).rgb;
+    sum += mul(w3, to_float4x4(sample3curr, sample3adjx, sample3adjy, sample3diag)).rgb;
+    sum += mul(w4, to_float4x4(sample4curr, sample4adjx, sample4adjy, sample4diag)).rgb;
+    sum += mul(w5, to_float4x4(sample5curr, sample5adjx, sample5adjy, sample5diag)).rgb;
+    sum += mul(w6, to_float4x4(sample6curr, sample6adjx, sample6adjy, sample6diag)).rgb;
+    sum += mul(w7, to_float4x4(sample7curr, sample7adjx, sample7adjy, sample7diag)).rgb;
+    sum += mul(w8, to_float4x4(sample8curr, sample8adjx, sample8adjy, sample8diag)).rgb;
     return sum * weight_sum_inv;
 }
 
@@ -1570,13 +1570,13 @@ float3 tex2Dblur10x10shared(const sampler2D tex,
     //  Fill each row of a matrix with an rgb sample and pre-multiply by the
     //  weights to obtain a weighted result.  First do the simple ones:
     float3 sum = float3(0.0,0.0,0.0);
-    sum += mul(w0, float4x3(sample0curr, sample0adjx, sample0adjy, sample0diag));
-    sum += mul(w1, float4x3(sample1curr, sample1adjx, sample1adjy, sample1diag));
-    sum += mul(w3, float4x3(sample3curr, sample3adjx, sample3adjy, sample3diag));
-    sum += mul(w4, float4x3(sample4curr, sample4adjx, sample4adjy, sample4diag));
+    sum += mul(w0, to_float4x4(sample0curr, sample0adjx, sample0adjy, sample0diag)).rgb;
+    sum += mul(w1, to_float4x4(sample1curr, sample1adjx, sample1adjy, sample1diag)).rgb;
+    sum += mul(w3, to_float4x4(sample3curr, sample3adjx, sample3adjy, sample3diag)).rgb;
+    sum += mul(w4, to_float4x4(sample4curr, sample4adjx, sample4adjy, sample4diag)).rgb;
     //  Now do the mixed-sample ones:
-    sum += mul(w2and5, float4x3(sample2curr, sample2adjy, sample5curr, sample5adjy));
-    sum += mul(w6and7, float4x3(sample6curr, sample6adjx, sample7curr, sample7adjx));
+    sum += mul(w2and5, to_float4x4(sample2curr, sample2adjy, sample5curr, sample5adjy)).rgb;
+    sum += mul(w6and7, to_float4x4(sample6curr, sample6adjx, sample7curr, sample7adjx)).rgb;
     sum += w8curr * sample8curr;
     //  Normalize the sum (so the weights add to 1.0) and return:
     return sum * weight_sum_inv;
@@ -1700,10 +1700,10 @@ float3 tex2Dblur8x8shared(const sampler2D tex,
     //  Fill each row of a matrix with an rgb sample and pre-multiply by the
     //  weights to obtain a weighted result:
     float3 sum = float3(0.0,0.0,0.0);
-    sum += mul(w0, float4x3(sample0curr, sample0adjx, sample0adjy, sample0diag));
-    sum += mul(w1, float4x3(sample1curr, sample1adjx, sample1adjy, sample1diag));
-    sum += mul(w2, float4x3(sample2curr, sample2adjx, sample2adjy, sample2diag));
-    sum += mul(w3, float4x3(sample3curr, sample3adjx, sample3adjy, sample3diag));
+    sum += mul(w0, to_float4x4(sample0curr, sample0adjx, sample0adjy, sample0diag)).rgb;
+    sum += mul(w1, to_float4x4(sample1curr, sample1adjx, sample1adjy, sample1diag)).rgb;
+    sum += mul(w2, to_float4x4(sample2curr, sample2adjx, sample2adjy, sample2diag)).rgb;
+    sum += mul(w3, to_float4x4(sample3curr, sample3adjx, sample3adjy, sample3diag)).rgb;
     return sum * weight_sum_inv;
 }
 
@@ -1805,7 +1805,7 @@ float3 tex2Dblur6x6shared(const sampler2D tex,
     //  weights to obtain a weighted result for sample1*, and handle the rest
     //  of the weights more directly/verbosely:
     float3 sum = float3(0.0,0.0,0.0);
-    sum += mul(w0, float4x3(sample0curr, sample0adjx, sample0adjy, sample0diag));
+    sum += mul(w0, to_float4x4(sample0curr, sample0adjx, sample0adjy, sample0diag)).rgb;
     sum += w1curr * sample1curr + w1adjy * sample1adjy + w2curr * sample2curr +
             w2adjx * sample2adjx + w3curr * sample3curr;
     return sum * weight_sum_inv;

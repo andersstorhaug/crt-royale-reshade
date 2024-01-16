@@ -564,7 +564,7 @@ float3 tex2Daa4x(const sampler2D tex, const float2 tex_uv,
     const float3 w_sum = half_sum + half_sum.bgr;
     const float3 w_sum_inv = 1.0/w_sum;
     //  Scale the pixel-space to texture offset matrix by the pixel diameter.
-    const float2x2 true_pixel_to_tex_uv = pixel_to_tex_uv * aa_pixel_diameter;
+    const float2x2 true_pixel_to_tex_uv = mul(aa_pixel_diameter, pixel_to_tex_uv);
     //  Get uv sample offsets, mirror on odd frames if directed, and exploit
     //  diagonal symmetry:
     const float2 frame_sign = get_frame_sign(frame);
@@ -610,8 +610,7 @@ float3 tex2Daa5x(const sampler2D tex, const float2 tex_uv,
     //  Get the weight sum to normalize the total to 1.0 later:
     const float3 w_sum_inv = 1.0/(w0 + w1 + w2 + w3 + w4);
     //  Scale the pixel-space to texture offset matrix by the pixel diameter.
-    const float2x2 true_pixel_to_tex_uv =
-        float2x2((pixel_to_tex_uv * aa_pixel_diameter));
+    const float2x2 true_pixel_to_tex_uv = mul(aa_pixel_diameter, pixel_to_tex_uv);
     //  Get uv sample offsets, mirror on odd frames if directed, and exploit
     //  diagonal symmetry:
     const float2 frame_sign = get_frame_sign(frame);
@@ -665,8 +664,7 @@ float3 tex2Daa6x(const sampler2D tex, const float2 tex_uv,
     const float3 w_sum = half_sum + half_sum.bgr;
     const float3 w_sum_inv = 1.0/(w_sum);
     //  Scale the pixel-space to texture offset matrix by the pixel diameter.
-    const float2x2 true_pixel_to_tex_uv =
-        float2x2((pixel_to_tex_uv * aa_pixel_diameter));
+    const float2x2 true_pixel_to_tex_uv = mul(aa_pixel_diameter, pixel_to_tex_uv);
     //  Get uv sample offsets, mirror on odd frames if directed, and exploit
     //  diagonal symmetry:
     const float2 frame_sign = get_frame_sign(frame);
@@ -721,8 +719,7 @@ float3 tex2Daa7x(const sampler2D tex, const float2 tex_uv,
     const float3 w_sum = half_sum + half_sum.bgr + w3;
     const float3 w_sum_inv = 1.0/(w_sum);
     //  Scale the pixel-space to texture offset matrix by the pixel diameter.
-    const float2x2 true_pixel_to_tex_uv =
-        float2x2((pixel_to_tex_uv * aa_pixel_diameter));
+    const float2x2 true_pixel_to_tex_uv = mul(aa_pixel_diameter, pixel_to_tex_uv);
     //  Get uv sample offsets, mirror on odd frames if directed, and exploit
     //  diagonal symmetry:
     const float2 frame_sign = get_frame_sign(frame);
@@ -781,8 +778,7 @@ float3 tex2Daa8x(const sampler2D tex, const float2 tex_uv,
     const float3 w_sum = half_sum + half_sum.bgr;
     const float3 w_sum_inv = 1.0/(w_sum);
     //  Scale the pixel-space to texture offset matrix by the pixel diameter.
-    const float2x2 true_pixel_to_tex_uv =
-        float2x2((pixel_to_tex_uv * aa_pixel_diameter));
+    const float2x2 true_pixel_to_tex_uv = mul(aa_pixel_diameter, pixel_to_tex_uv);
     //  Get uv sample offsets, and mirror on odd frames if directed:
     const float2 frame_sign = get_frame_sign(frame);
     const float2 uv_offset0 = mul(true_pixel_to_tex_uv, xy_offset0 * frame_sign);
@@ -853,8 +849,7 @@ float3 tex2Daa12x(const sampler2D tex, const float2 tex_uv,
     const float3 w_sum = half_sum + half_sum.bgr;
     const float3 w_sum_inv = 1.0/w_sum;
     //  Scale the pixel-space to texture offset matrix by the pixel diameter.
-    const float2x2 true_pixel_to_tex_uv =
-        float2x2((pixel_to_tex_uv * aa_pixel_diameter));
+    const float2x2 true_pixel_to_tex_uv = mul(aa_pixel_diameter, pixel_to_tex_uv);
     //  Get uv sample offsets, mirror on odd frames if directed, and exploit
     //  diagonal symmetry:
     const float2 frame_sign = get_frame_sign(frame);
@@ -943,8 +938,7 @@ float3 tex2Daa16x(const sampler2D tex, const float2 tex_uv,
     const float3 w_sum = half_sum + half_sum.bgr;
     const float3 w_sum_inv = 1.0/(w_sum);
     //  Scale the pixel-space to texture offset matrix by the pixel diameter.
-    const float2x2 true_pixel_to_tex_uv =
-        float2x2((pixel_to_tex_uv * aa_pixel_diameter));
+    const float2x2 true_pixel_to_tex_uv = mul(aa_pixel_diameter, pixel_to_tex_uv);
     //  Get uv sample offsets, mirror on odd frames if directed, and exploit
     //  diagonal symmetry:
     const float2 frame_sign = get_frame_sign(frame);
@@ -1050,8 +1044,7 @@ float3 tex2Daa20x(const sampler2D tex, const float2 tex_uv,
     const float3 w_sum = half_sum + half_sum.bgr;
     const float3 w_sum_inv = 1.0/(w_sum);
     //  Scale the pixel-space to texture offset matrix by the pixel diameter.
-    const float2x2 true_pixel_to_tex_uv =
-        float2x2((pixel_to_tex_uv * aa_pixel_diameter));
+    const float2x2 true_pixel_to_tex_uv = mul(aa_pixel_diameter, pixel_to_tex_uv);
     //  Get uv sample offsets, mirror on odd frames if directed, and exploit
     //  diagonal symmetry:
     const float2 frame_sign = get_frame_sign(frame);
@@ -1125,7 +1118,7 @@ float3 tex2Daa24x(const sampler2D tex, const float2 tex_uv,
     //  . . . . . . . Q . . . . . . . . . . . . . . . .  : off =(-11.5, -11.5)/24 + (7.0, 22.0)/24
     //  . . . . . . . . . . . . . . . . . Q . . . . . .  : off =(-11.5, -11.5)/24 + (17.0, 23.0)/24
     static const float grid_size = 24.0;
-    assign_aa_cubic_constants();
+    //assign_aa_cubic_constants();
     const float4 ssd_fai = get_subpixel_support_diam_and_final_axis_importance();
     const float2 subpixel_support_diameter = ssd_fai.xy;
     const float2 final_axis_importance = ssd_fai.zw;
@@ -1175,8 +1168,7 @@ float3 tex2Daa24x(const sampler2D tex, const float2 tex_uv,
     const float3 w_sum = half_sum + half_sum.bgr;
     const float3 w_sum_inv = 1.0/(w_sum);
     //  Scale the pixel-space to texture offset matrix by the pixel diameter.
-    const float2x2 true_pixel_to_tex_uv =
-        float2x2((pixel_to_tex_uv * aa_pixel_diameter));
+    const float2x2 true_pixel_to_tex_uv = mul(aa_pixel_diameter, pixel_to_tex_uv);
     //  Get uv sample offsets, mirror on odd frames if directed, and exploit
     //  diagonal symmetry:
     const float2 frame_sign = get_frame_sign(frame);
@@ -1272,8 +1264,7 @@ float3 tex2Daa_debug_16x_regular(const sampler2D tex, const float2 tex_uv,
     const float3 w_sum = half_sum + half_sum.bgr;
     const float3 w_sum_inv = 1.0/(w_sum);
     //  Scale the pixel-space to texture offset matrix by the pixel diameter.
-    const float2x2 true_pixel_to_tex_uv =
-        float2x2((pixel_to_tex_uv * aa_pixel_diameter));
+    const float2x2 true_pixel_to_tex_uv = mul(aa_pixel_diameter, pixel_to_tex_uv);
     //  Get uv sample offsets, taking advantage of row alignment:
     const float2 uv_step_x = mul(true_pixel_to_tex_uv, float2(xy_step.x, 0.0));
     const float2 uv_step_y = mul(true_pixel_to_tex_uv, float2(0.0, xy_step.y));
@@ -1337,8 +1328,7 @@ float3 tex2Daa_debug_dynamic(const sampler2D tex, const float2 tex_uv,
         }
     }
     //  Get uv offset vectors along x and y directions:
-    const float2x2 true_pixel_to_tex_uv =
-        float2x2((pixel_to_tex_uv * aa_pixel_diameter));
+    const float2x2 true_pixel_to_tex_uv = mul(aa_pixel_diameter, pixel_to_tex_uv);
     const float2 uv_offset_step_x = mul(true_pixel_to_tex_uv,
         float2(filter_space_offset_step.x, 0.0));
     const float2 uv_offset_step_y = mul(true_pixel_to_tex_uv,
@@ -1373,8 +1363,7 @@ float3 tex2Daa(const sampler2D tex, const float2 tex_uv,
 {
     //  Statically switch between antialiasing modes/levels:
     return (antialias_level < 0.5) ? tex2D_linearize(tex, tex_uv, input_gamma).rgb :
-        (antialias_level < 3.5) ? tex2Daa_subpixel_weights_only(
-            tex, tex_uv, pixel_to_tex_uv, input_gamma) :
+        (antialias_level < 3.5) ? tex2Daa_subpixel_weights_only(tex, tex_uv, pixel_to_tex_uv, input_gamma) :
         (antialias_level < 4.5) ? tex2Daa4x(tex, tex_uv, pixel_to_tex_uv, frame, input_gamma) :
         (antialias_level < 5.5) ? tex2Daa5x(tex, tex_uv, pixel_to_tex_uv, frame, input_gamma) :
         (antialias_level < 6.5) ? tex2Daa6x(tex, tex_uv, pixel_to_tex_uv, frame, input_gamma) :
@@ -1384,9 +1373,8 @@ float3 tex2Daa(const sampler2D tex, const float2 tex_uv,
         (antialias_level < 19.5) ? tex2Daa16x(tex, tex_uv, pixel_to_tex_uv, frame, input_gamma) :
         (antialias_level < 23.5) ? tex2Daa20x(tex, tex_uv, pixel_to_tex_uv, frame, input_gamma) :
         (antialias_level < 253.5) ? tex2Daa24x(tex, tex_uv, pixel_to_tex_uv, frame, input_gamma) :
-        (antialias_level < 254.5) ? tex2Daa_debug_16x_regular(
-            tex, tex_uv, pixel_to_tex_uv, frame, input_gamma) :
-        tex2Daa_debug_dynamic(tex, tex_uv, pixel_to_tex_uv, frame, input_gamma);
+        (antialias_level < 254.5) ? tex2Daa_debug_16x_regular(tex, tex_uv, pixel_to_tex_uv, frame, input_gamma) :
+            tex2Daa_debug_dynamic(tex, tex_uv, pixel_to_tex_uv, frame, input_gamma);
 }
 
 

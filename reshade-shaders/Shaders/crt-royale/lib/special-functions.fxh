@@ -47,6 +47,8 @@
 
 ///////////////////////////  GAUSSIAN ERROR FUNCTION  //////////////////////////
 
+#define to_float4x4(a, b, c) float4x4(float4(a, 1.0), float4(b, 1.0), float4(c, 1.0), float4(1.0, 1.0, 1.0, 1.0))
+
 float4 erf6(float4 x)
 {
     //  Requires:   x is the standard parameter to erf().

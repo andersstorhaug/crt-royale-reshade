@@ -174,7 +174,7 @@ void generatePhosphorMaskPS(
 
 void applyComputedPhosphorMaskPS(
     in float4 pos : SV_Position,
-    in float2 texcoord : TEXCOORD0,
+    in float2 texcoord : TEXCOORD,
     
     out float4 color : SV_Target
 ) {

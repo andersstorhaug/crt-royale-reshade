@@ -183,8 +183,8 @@ float3 get_raw_interpolated_color(const float3 color0,
     const float4 weights)
 {
     //  Use max to avoid bizarre artifacts from negative colors:
-    const float4x3 mtrx = float4x3(color0, color1, color2, color3);
-    const float3 m = mul(weights, mtrx);
+    const float4x4 mtrx = to_float4x4(color0, color1, color2, color3);
+    const float3 m = mul(weights, mtrx).rgb;
     return max(m, 0.0);
 }
 

@@ -56,7 +56,7 @@ void preblurVertPS(
 
 void preblurHorizPS(
     in const float4 pos : SV_Position,
-    in const float2 texcoord : TEXCOORD0,
+    in const float2 texcoord : TEXCOORD,
 
     out float4 color : SV_Target
 ) {
